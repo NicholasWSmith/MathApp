@@ -151,7 +151,7 @@ public class MathApp extends JFrame {
 						
 					
 						
-						if(firstDig + secondDig >= 10){
+						if(firstDig + secondDig > 10 || firstDig + secondDig == 10){
 							firstDig /= 2;
 							secondDig /= 2;
 						}
