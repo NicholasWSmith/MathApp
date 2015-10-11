@@ -35,28 +35,43 @@ public class MathApp extends JFrame {
 	}
 	
 	public MathApp() {
+		
+		//creating the GUI
 		JPanel mainPanel = new JPanel();
 		JPanel sign = new JPanel(new GridBagLayout());
 		JPanel questions = new JPanel();
-	
+		
+		//setting names, and dimensions
 		setVisible(true); 
 		setLocation(new Point(400,100));
 		setSize(800,500);
 		setTitle("Math App");
+		
+		//button for cretaing equations
 		JButton create = new JButton("Create");
+		
+		//max # of equations
 		JLabel firstLabel = new JLabel("How many equations do you need?");
+		
+		//maximum number the generator can use in an equation
 		JLabel maxNumber = new JLabel("What is the max number?");
-		JTextField numOfQuestions = new JTextField("How many?");
-		JTextField maxNum = new JTextField("Max Num");
 		
-		JCheckBox add = new JCheckBox("Addition");
-		JCheckBox sub = new JCheckBox("Subtraction");
-		JCheckBox div = new JCheckBox("Division");
-		JCheckBox mult = new JCheckBox("Multiplication");
+		//filling textfield
+		final JTextField numOfQuestions = new JTextField("How many?");
 		
+		//filling textfield
+		final JTextField maxNum = new JTextField("Max Num");
 		
-		JCheckBox carryOver = new JCheckBox("Carry Over?");
-		JCheckBox negs = new JCheckBox("Negatives?");
+		//checkboxes for operators and other specifications
+		final JCheckBox add = new JCheckBox("Addition");
+		final JCheckBox sub = new JCheckBox("Subtraction");
+		final JCheckBox div = new JCheckBox("Division");
+		final JCheckBox mult = new JCheckBox("Multiplication");
+		final JCheckBox carryOver = new JCheckBox("Carry Over?");
+		final JCheckBox negs = new JCheckBox("Negatives?");
+		final JCheckBox dividesEven = new JCheckBox("Divides Evenly?");
+		
+		//layout
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(15, 15, 15, 15);
 		
@@ -71,7 +86,7 @@ public class MathApp extends JFrame {
 		
 		
 		
-		
+		//adding the checkboxes to the gui and setting them apart
 		sign.add(add, gbc);
 		sign.add(sub, gbc);
 		sign.add(div, gbc);
@@ -82,11 +97,15 @@ public class MathApp extends JFrame {
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		sign.add(negs, gbc);
+		gbc.gridx = 2;
+		gbc.gridy = 1;
+		sign.add(dividesEven, gbc);
 		
 		
 		
 		mainPanel.add(create);
 		
+		//more layout
 		add(questions, BorderLayout.NORTH);
 		add(mainPanel, BorderLayout. SOUTH);
 		add(sign, BorderLayout.CENTER);
@@ -96,6 +115,7 @@ public class MathApp extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//getting the variables from the textfields
 				String m = maxNum.getText();
 				int maxNum1 =  Integer.parseInt(m);	
 				
@@ -105,17 +125,17 @@ public class MathApp extends JFrame {
 				String[] equations = new String[questions];
 				int[] answers = new int[questions];
 				
+				
+				//for loop for numberof questions they want
 				for(int i = 0; i < questions; i++) {
+					//randomizing which operator is chosen
 					Random random = new Random();
 					int operator = random.nextInt(4);
 					
 					
 					
-					
+					//creating the array of operators to choose from. 
 					String[] arr = new String[4];
-					
-					
-					
 					if (add.isSelected() == true)  {
 						arr[0] = "+";
 					}
@@ -135,28 +155,79 @@ public class MathApp extends JFrame {
 					
 					
 					
-					
+					//creating the 2 numbers for the equation
 					int firstNum = random.nextInt(maxNum1 + 1);
 					int secNum = random.nextInt(maxNum1 + 1);
+					if (firstNum == 0){
+						firstNum = 1;
+					}
+					if (secNum == 0){
+						secNum =1;
+					}
 					
+					
+					//choosing which operator to use
 					while (arr[operator] == null){
 						operator = random.nextInt(4);
 					}
 					
 					
-					
-					if (carryOver.isSelected() == false){
-						char firstDig = String.valueOf(Math.abs((long)firstNum)).charAt(0);
-						char secondDig = String.valueOf(Math.abs((long)secNum)).charAt(0);
+					//making sure the addition doesn't carry over. 
+					if (carryOver.isSelected() == false && arr[operator].equals("+")){
+						//stands for first Number Right Most Digit
+						int fNRMD = 0;
+						//stands for second Number Right Most Digit
+						int sNRMD = 0;
 						
-					
 						
-						if(firstDig + secondDig > 10 || firstDig + secondDig == 10){
-							firstDig /= 2;
-							secondDig /= 2;
+						if (firstNum < 100){
+							fNRMD = firstNum % 10;
+						}
+						
+						if (secNum < 100){
+							sNRMD = firstNum % 10;
+						}
+						
+						
+						if (fNRMD + sNRMD > 10 || fNRMD + sNRMD == 0){
+							fNRMD = fNRMD / 2;
 						}
 						
 					}
+					
+					//making sure that there are no negative answers 
+					if (negs.isSelected() == true && arr[operator].equals("-")){
+						
+						if(firstNum - secNum < 0){
+							int temp;
+							temp = firstNum;
+							firstNum = secNum;
+							secNum = temp;
+							
+							 
+						}
+					}
+					
+					
+					//making sure that there is even division
+					if (dividesEven.isSelected() == true && arr[operator].equals("/")){
+						
+						//with x / y, if x < y it will also have a remaineder
+						if (secNum > firstNum) {
+							int temp;
+							temp = firstNum;
+							firstNum = secNum;
+							secNum = temp;
+						}
+						
+						//while looped use to decrease secNum by 1, until an even divisible is found. 
+						//Lowest possible case will be secNum = 1, where firstNum is a prime number. 
+						while (firstNum % secNum != 0){
+							secNum--;
+						}
+					}
+					
+					
 					
 					
 					
@@ -225,3 +296,4 @@ public class MathApp extends JFrame {
 
 
 }
+
